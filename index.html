@@ -1037,7 +1037,7 @@
           const bEventId = b.event?.id || 0;
           const aDate = eventDateMap.has(aEventId) ? new Date(eventDateMap.get(aEventId)) : new Date(0);
           const bDate = eventDateMap.has(bEventId) ? new Date(eventDateMap.get(bEventId)) : new Date(0);
-          const dateDiff = aDate - bDate;
+          const dateDiff = bDate - aDate;
           if (dateDiff !== 0) return dateDiff;
           return (a.type || '').localeCompare(b.type || '');
         }).forEach(s => {
