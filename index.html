@@ -5,7 +5,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VEX IQ Scout Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: #1a2035;
+      --bg-input: #0d1321;
+      --border: #252d44;
+      --border-hover: #3b4a6b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #5a6580;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --accent-glow: #6366f133;
+      --green: #10b981;
+      --green-soft: #10b98122;
+      --gold: #f59e0b;
+      --gold-soft: #f59e0b22;
+      --red: #ef4444;
+      --red-soft: #ef444422;
+      --blue: #3b82f6;
+      --blue-hover: #60a5fa;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,111 +45,181 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       min-height: 100vh;
+      line-height: 1.5;
     }
 
+    /* ===== Header ===== */
     .header {
-      background: linear-gradient(135deg, #1e5f3a, #1b6920);
-      padding: 20px 24px;
+      background: linear-gradient(135deg, #111827 0%, #1a1040 50%, #111827 100%);
+      padding: 28px 24px 24px;
       text-align: center;
-      border-bottom: 2px solid #22c55e;
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 50;
+      backdrop-filter: blur(20px);
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
 
     .header h1 {
-      font-size: 24px;
+      font-size: 22px;
+      font-weight: 700;
       color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .header h1 span {
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .header p {
-      color: #94a3b8;
-      margin-top: 4px;
+      color: var(--text-secondary);
+      margin-top: 6px;
       font-size: 13px;
+      font-weight: 400;
     }
 
+    /* ===== Container ===== */
     .container {
-      max-width: 1100px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 20px 16px;
+      padding: 24px 16px 60px;
     }
 
-    /* Match Dashboard */
-    .dashboard {
-      margin-bottom: 24px;
-    }
-
+    /* ===== Dashboard Title ===== */
     .dash-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .dash-title h2 {
-      font-size: 20px;
-      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+
+    .dash-title .btn-group {
+      display: flex;
+      gap: 8px;
     }
 
     .dash-title button {
       padding: 8px 16px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: #94a3b8;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
       font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
       cursor: pointer;
+      transition: var(--transition);
     }
 
     .dash-title button:hover {
-      background: #334155;
-      color: #fff;
+      background: var(--border);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
     }
 
+    /* ===== Match Cards ===== */
     .match-card {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 12px;
-      border: 1px solid #334155;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .match-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 2px 16px rgba(99, 102, 241, 0.06);
     }
 
     .match-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .match-label {
-      background: #22c55e;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
       color: #fff;
       font-weight: 700;
-      font-size: 14px;
-      padding: 4px 12px;
+      font-size: 12px;
+      padding: 5px 12px;
       border-radius: 6px;
       white-space: nowrap;
+      letter-spacing: 0.5px;
+      min-width: 38px;
+      text-align: center;
     }
 
     .match-name {
       flex: 1;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid #475569;
-      background: #0f172a;
-      color: #fff;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-primary);
       font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
       outline: none;
+      transition: var(--transition);
     }
 
     .match-name:focus {
-      border-color: #22c55e;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
+    .btn-remove-match {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 15px;
+      cursor: pointer;
+      line-height: 1;
+      transition: var(--transition);
+      opacity: 0;
+    }
+
+    .match-card:hover .btn-remove-match {
+      opacity: 1;
+    }
+
+    .btn-remove-match:hover {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    /* ===== Partners Grid ===== */
     .partners-grid {
       display: flex;
       flex-direction: column;
@@ -127,167 +229,212 @@
     .partner-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      transition: var(--transition);
+    }
+
+    .partner-row:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border);
     }
 
     .partner-role {
       font-size: 12px;
-      color: #64748b;
-      width: 70px;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 62px;
       flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .partner-input {
-      flex: 1;
-      padding: 8px 12px;
+      width: 130px;
+      flex-shrink: 0;
+      padding: 7px 12px;
       border-radius: 6px;
-      border: 1px solid #475569;
-      background: #0f172a;
-      color: #fff;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-primary);
       font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
       outline: none;
-      max-width: 160px;
+      transition: var(--transition);
     }
 
     .partner-input:focus {
-      border-color: #22c55e;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
     .btn-lookup {
-      padding: 8px 14px;
+      padding: 7px 16px;
       border-radius: 6px;
       border: none;
-      background: #3b82f6;
+      background: var(--accent);
       color: #fff;
       font-size: 12px;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
       white-space: nowrap;
+      transition: var(--transition);
+      letter-spacing: 0.3px;
     }
 
     .btn-lookup:hover {
-      background: #2563eb;
+      background: var(--accent-hover);
+      box-shadow: 0 2px 12px var(--accent-glow);
     }
 
     .btn-lookup:disabled {
-      background: #475569;
+      background: var(--border);
       cursor: not-allowed;
-    }
-
-    .btn-lookup.loading {
-      background: #475569;
+      box-shadow: none;
     }
 
     .rating-badge {
       display: flex;
       align-items: center;
       gap: 6px;
-      min-width: 140px;
+      flex: 1;
+      min-width: 0;
     }
 
     .rating-stars {
-      color: #fbbf24;
+      color: var(--gold);
       font-size: 14px;
       letter-spacing: 1px;
+      flex-shrink: 0;
     }
 
     .rating-num {
-      color: #94a3b8;
-      font-size: 13px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
     }
 
     .rating-name {
-      color: #cbd5e1;
+      color: var(--text-secondary);
       font-size: 12px;
-      max-width: 120px;
+      font-weight: 400;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     .no-rating {
-      color: #475569;
+      color: var(--text-muted);
       font-size: 12px;
       font-style: italic;
     }
 
-
-    .btn-remove {
+    .btn-remove-partner {
       padding: 4px 8px;
       border-radius: 4px;
       border: none;
       background: transparent;
-      color: #64748b;
-      font-size: 16px;
+      color: var(--text-muted);
+      font-size: 15px;
       cursor: pointer;
       line-height: 1;
+      transition: var(--transition);
+      flex-shrink: 0;
     }
 
-    .btn-remove:hover {
-      color: #f87171;
+    .btn-remove-partner:hover {
+      color: var(--red);
+      background: var(--red-soft);
     }
 
-    /* Detail Overlay */
+    /* ===== Detail Overlay ===== */
     .detail-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: #0f172aee;
+      background: rgba(10, 14, 26, 0.95);
+      backdrop-filter: blur(12px);
       z-index: 100;
       overflow-y: auto;
     }
 
     .detail-overlay.active {
       display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     .detail-content {
       max-width: 900px;
       margin: 0 auto;
-      padding: 24px 16px 60px;
+      padding: 24px 16px 80px;
     }
 
     .detail-close {
       position: fixed;
-      top: 12px;
+      top: 16px;
       right: 20px;
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
       width: 40px;
       height: 40px;
-      font-size: 20px;
+      font-size: 18px;
       cursor: pointer;
       z-index: 101;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .detail-close:hover {
-      background: #dc2626;
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
     }
 
+    /* ===== Detail Cards ===== */
     .card {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 24px;
       margin-bottom: 16px;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
     }
 
     .card h3 {
-      font-size: 18px;
-      color: #fff;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #334155;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.2px;
     }
 
     .team-header {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 24px;
+      background: linear-gradient(135deg, var(--bg-card), #1e1545);
+      border-radius: var(--radius);
+      padding: 28px;
       margin-bottom: 16px;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -296,13 +443,16 @@
     }
 
     .team-info h2 {
-      font-size: 24px;
+      font-size: 22px;
+      font-weight: 700;
       color: #fff;
+      letter-spacing: -0.5px;
     }
 
     .team-info p {
-      color: #94a3b8;
+      color: var(--text-secondary);
       margin-top: 4px;
+      font-size: 13px;
     }
 
     .team-rating {
@@ -310,42 +460,54 @@
     }
 
     .team-rating .stars {
-      font-size: 36px;
-      color: #fbbf24;
+      font-size: 32px;
+      color: var(--gold);
       letter-spacing: 2px;
     }
 
     .team-rating .score {
-      font-size: 14px;
-      color: #94a3b8;
-      margin-top: 4px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      font-weight: 500;
     }
 
+    /* ===== Stats Grid ===== */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
     }
 
     .stat-item {
-      background: #0f172a;
-      border-radius: 8px;
-      padding: 14px;
+      background: var(--bg-input);
+      border-radius: 10px;
+      padding: 16px 12px;
       text-align: center;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .stat-item:hover {
+      border-color: var(--border-hover);
     }
 
     .stat-item .value {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      color: #22c55e;
+      color: var(--accent);
     }
 
     .stat-item .label {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-top: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
     }
 
+    /* ===== Tables ===== */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -355,69 +517,73 @@
     td {
       padding: 10px 12px;
       text-align: left;
-      border-bottom: 1px solid #334155;
-      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
     }
 
     th {
-      color: #94a3b8;
+      color: var(--text-muted);
       font-weight: 600;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     td {
-      color: #e2e8f0;
+      color: var(--text-primary);
     }
 
     tr:hover td {
-      background: #1a2540;
+      background: rgba(99, 102, 241, 0.04);
     }
 
+    /* ===== Badges ===== */
     .badge {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 5px;
+      font-size: 11px;
       font-weight: 600;
+      letter-spacing: 0.3px;
     }
 
     .badge-world {
-      background: #7c3aed33;
+      background: #7c3aed22;
       color: #a78bfa;
     }
 
     .badge-sig {
-      background: #db277733;
+      background: #ec489922;
       color: #f472b6;
     }
 
     .badge-national {
-      background: #0891b233;
+      background: #0891b222;
       color: #22d3ee;
     }
 
     .badge-state {
-      background: #059669aa;
+      background: #10b98122;
       color: #6ee7b7;
     }
 
     .badge-regional {
-      background: #d9770633;
-      color: #fdba74;
+      background: #f59e0b22;
+      color: #fbbf24;
     }
 
     .badge-other {
-      background: #47556933;
+      background: #64748b22;
       color: #94a3b8;
     }
 
+    /* ===== Strength Bar ===== */
     .strength-bar {
       display: inline-block;
-      width: 60px;
-      height: 8px;
-      background: #334155;
-      border-radius: 4px;
+      width: 56px;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
       overflow: hidden;
       vertical-align: middle;
       margin-left: 6px;
@@ -425,33 +591,38 @@
 
     .strength-fill {
       height: 100%;
-      border-radius: 4px;
+      border-radius: 3px;
     }
 
     .rank-good {
-      color: #4ade80;
+      color: #10b981;
+      font-weight: 600;
     }
 
     .rank-ok {
-      color: #fbbf24;
+      color: var(--gold);
+      font-weight: 600;
     }
 
     .rank-bad {
-      color: #f87171;
+      color: var(--red);
+      font-weight: 600;
     }
 
     .no-data {
-      color: #64748b;
+      color: var(--text-muted);
       font-style: italic;
       padding: 12px 0;
+      font-size: 13px;
     }
 
+    /* ===== Loading ===== */
     .loading-sm {
       display: inline-block;
       width: 14px;
       height: 14px;
-      border: 2px solid #334155;
-      border-top-color: #3b82f6;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       vertical-align: middle;
@@ -464,30 +635,44 @@
     }
 
     .error {
-      background: #991b1b33;
-      border: 1px solid #991b1b;
-      border-radius: 8px;
+      background: var(--red-soft);
+      border: 1px solid #ef444444;
+      border-radius: var(--radius-sm);
       padding: 16px;
       color: #fca5a5;
       margin-bottom: 16px;
+      font-size: 13px;
     }
 
-    @media (max-width: 600px) {
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px 12px 60px;
+      }
+
       .partner-row {
         flex-wrap: wrap;
+        gap: 6px;
+        padding: 10px;
       }
 
       .partner-role {
         width: 100%;
       }
 
+      .partner-input {
+        width: 100%;
+      }
+
       .rating-badge {
         min-width: auto;
+        width: 100%;
       }
 
       .team-header {
         flex-direction: column;
         text-align: center;
+        padding: 20px;
       }
 
       .stats-grid {
@@ -495,12 +680,20 @@
       }
 
       table {
-        font-size: 12px;
+        font-size: 11px;
       }
 
       th,
       td {
         padding: 8px 6px;
+      }
+
+      .match-card {
+        padding: 14px;
+      }
+
+      .btn-remove-match {
+        opacity: 1;
       }
     }
   </style>
@@ -509,8 +702,8 @@
 <body>
 
   <div class="header">
-    <h1>VEX IQ Scout Dashboard</h1>
-    <p>Manage your matches, scout alliance partners, and track team ratings</p>
+    <h1>⚙️ <span>VEX IQ</span> Scout Dashboard</h1>
+    <p>Manage your matches · Scout alliance partners · Track team ratings</p>
   </div>
 
   <div class="container">
@@ -535,7 +728,6 @@
     function loadData() {
       const saved = localStorage.getItem('vex_iq_dashboard');
       if (saved) return JSON.parse(saved);
-      // Default: 8 matches, each with empty partners
       const matches = [];
       for (let i = 0; i < DEFAULT_MATCHES; i++) {
         matches.push({
@@ -556,45 +748,45 @@
     function renderDashboard() {
       const el = document.getElementById('dashboard');
       let html = `
-    <div class="dash-title">
-      <h2>My Matches</h2>
-      <div>
-        <button onclick="addMatch()">+ Add Match</button>
-        <button onclick="if(confirm('Clear all data?')){localStorage.removeItem('vex_iq_dashboard');dashData=loadData();renderDashboard();}">Reset</button>
-      </div>
-    </div>`;
+        <div class="dash-title">
+          <h2>My Matches</h2>
+          <div class="btn-group">
+            <button onclick="addMatch()">+ Add Match</button>
+            <button onclick="if(confirm('Clear all data?')){localStorage.removeItem('vex_iq_dashboard');dashData=loadData();renderDashboard();}">Reset</button>
+          </div>
+        </div>`;
 
       dashData.matches.forEach((match, mi) => {
         html += `
-    <div class="match-card">
-      <div class="match-header">
-        <span class="match-label">#${mi + 1}</span>
-        <input class="match-name" value="${escHtml(match.name)}" onchange="updateMatchName(${mi}, this.value)" placeholder="Match name..." />
-        <button class="btn-remove" onclick="removeMatch(${mi})" title="Delete match">✕</button>
-      </div>
-      <div class="partners-grid">`;
+        <div class="match-card">
+          <div class="match-header">
+            <span class="match-label">#${mi + 1}</span>
+            <input class="match-name" value="${escHtml(match.name)}" onchange="updateMatchName(${mi}, this.value)" placeholder="Match name..." />
+            <button class="btn-remove-match" onclick="removeMatch(${mi})" title="Delete match">✕</button>
+          </div>
+          <div class="partners-grid">`;
 
         match.partners.forEach((p, pi) => {
           const hasRating = p.rating !== null && p.rating !== undefined;
           html += `
-        <div class="partner-row">
-          <span class="partner-role">Partner ${pi + 1}</span>
-          <input class="partner-input" value="${escHtml(p.number)}" onchange="updatePartnerNum(${mi},${pi},this.value)" placeholder="Team #" />
-          <button class="btn-lookup" onclick="lookupPartner(${mi},${pi})" id="btn-${mi}-${pi}">Lookup</button>
-          <div class="rating-badge">
-            ${hasRating ? `
-              <span class="rating-stars">${renderStarsSmall(p.rating)}</span>
-              <span class="rating-num">${p.rating}/5</span>
-              <span class="rating-name" title="${escHtml(p.teamName)}">${escHtml(p.teamName)}</span>
-            ` : `<span class="no-rating">${p.number ? 'Not yet scouted' : ''}</span>`}
-          </div>
-          <button class="btn-remove" onclick="removePartner(${mi},${pi})" title="Remove">&minus;</button>
-        </div>`;
+            <div class="partner-row">
+              <span class="partner-role">${pi === 0 ? 'Alliance' : 'Partner ' + (pi + 1)}</span>
+              <input class="partner-input" value="${escHtml(p.number)}" onchange="updatePartnerNum(${mi},${pi},this.value)" placeholder="Team #" />
+              <button class="btn-lookup" onclick="lookupPartner(${mi},${pi})" id="btn-${mi}-${pi}">Lookup</button>
+              <div class="rating-badge">
+                ${hasRating ? `
+                  <span class="rating-stars">${renderStarsSmall(p.rating)}</span>
+                  <span class="rating-num">${p.rating}/5</span>
+                  <span class="rating-name" title="${escHtml(p.teamName)}">${escHtml(p.teamName)}</span>
+                ` : `<span class="no-rating">${p.number ? 'Not yet scouted' : ''}</span>`}
+              </div>
+              <button class="btn-remove-partner" onclick="removePartner(${mi},${pi})" title="Remove">&minus;</button>
+            </div>`;
         });
 
         html += `
-      </div>
-    </div>`;
+          </div>
+        </div>`;
       });
 
       el.innerHTML = html;
@@ -628,8 +820,6 @@
       saveData(dashData);
       renderDashboard();
     }
-
-
 
     function removePartner(mi, pi) {
       if (dashData.matches[mi].partners.length <= 1) return;
@@ -729,13 +919,11 @@
 
         const rating = calcTeamRating(rankings, skills, events, worldSkillsRaw, awards);
 
-        // Write back to dashboard
         partner.rating = rating;
         partner.teamName = team.team_name || teamNum;
         saveData(dashData);
         renderDashboard();
 
-        // Show detail overlay
         showDetail(team, events, rankings, skills, awards, worldSkillsRaw, rating);
       } catch (err) {
         alert(`Error: ${err.message}`);
@@ -795,25 +983,25 @@
       let html = '';
 
       html += `<div class="team-header">
-    <div class="team-info">
-      <h2>${team.number} — ${team.team_name || 'Unknown'}</h2>
-      <p>${team.organization || ''} | ${team.location?.city || ''}, ${team.location?.region || ''}, ${team.location?.country || ''}</p>
-      <p style="margin-top:4px; color:#64748b; font-size:13px;">Grade: ${team.grade || 'N/A'}</p>
-    </div>
-    <div class="team-rating">
-      <div class="stars" style="font-size:36px;color:#fbbf24;letter-spacing:2px;">${renderStars(rating)}</div>
-      <div class="score" style="font-size:14px;color:#94a3b8;margin-top:4px;">Overall Rating ${rating} / 5.0</div>
-    </div>
-  </div>`;
+        <div class="team-info">
+          <h2>${team.number} — ${team.team_name || 'Unknown'}</h2>
+          <p>${team.organization || ''} | ${team.location?.city || ''}, ${team.location?.region || ''}, ${team.location?.country || ''}</p>
+          <p style="margin-top:4px; color:var(--text-muted); font-size:12px;">Grade: ${team.grade || 'N/A'}</p>
+        </div>
+        <div class="team-rating">
+          <div class="stars">${renderStars(rating)}</div>
+          <div class="score">Overall Rating ${rating} / 5.0</div>
+        </div>
+      </div>`;
 
       html += `<div class="card"><h3>Season Overview</h3><div class="stats-grid">
-    <div class="stat-item"><div class="value">${events.length}</div><div class="label">Events</div></div>
-    <div class="stat-item"><div class="value">${tw}W-${tl}L-${tt}T</div><div class="label">Record</div></div>
-    <div class="stat-item"><div class="value">${wsRank}</div><div class="label">Skills Rank / ${wsTotal}</div></div>
-    <div class="stat-item"><div class="value">${wsScore}</div><div class="label">Skills High</div></div>
-    <div class="stat-item"><div class="value">${bestDriver ?? 'N/A'}</div><div class="label">Teamwork High</div></div>
-    <div class="stat-item"><div class="value">${bestProg ?? 'N/A'}</div><div class="label">Prog High</div></div>
-  </div></div>`;
+        <div class="stat-item"><div class="value">${events.length}</div><div class="label">Events</div></div>
+        <div class="stat-item"><div class="value">${tw}W-${tl}L-${tt}T</div><div class="label">Record</div></div>
+        <div class="stat-item"><div class="value">${wsRank}</div><div class="label">Skills Rank / ${wsTotal}</div></div>
+        <div class="stat-item"><div class="value">${wsScore}</div><div class="label">Skills High</div></div>
+        <div class="stat-item"><div class="value">${bestDriver ?? 'N/A'}</div><div class="label">Teamwork High</div></div>
+        <div class="stat-item"><div class="value">${bestProg ?? 'N/A'}</div><div class="label">Prog High</div></div>
+      </div></div>`;
 
       // Event Results
       html += `<div class="card"><h3>Event Results</h3>`;
@@ -829,7 +1017,7 @@
           for (const r of data.rankings) {
             const str = getEventStrength(level, 30);
             const pct = (str / 5) * 100;
-            const col = str >= 4 ? '#f472b6' : str >= 3 ? '#fbbf24' : '#60a5fa';
+            const col = str >= 4 ? '#a78bfa' : str >= 3 ? '#fbbf24' : '#60a5fa';
             const rc = r.rank <= 3 ? 'rank-good' : r.rank <= 10 ? 'rank-ok' : 'rank-bad';
             html += `<tr><td>${evt.name || data.event?.name || '?'}</td><td>${getLevelBadge(level)}</td><td class="${rc}"><strong>#${r.rank}</strong></td><td>${r.wins || 0}W-${r.losses || 0}L-${r.ties || 0}T</td><td>${r.wp ?? '-'}/${r.ap ?? '-'}/${r.sp ?? '-'}</td><td>${str}<div class="strength-bar"><div class="strength-fill" style="width:${pct}%;background:${col}"></div></div></td></tr>`;
           }
@@ -856,9 +1044,9 @@
         html += '</tbody></table></div>';
       }
 
-      html += `<div style="text-align:center;margin-top:20px;">
-    <button onclick="closeDetail()" style="padding:12px 32px;border-radius:8px;border:1px solid #22c55e;background:transparent;color:#22c55e;font-size:16px;cursor:pointer;">Back to Dashboard</button>
-  </div>`;
+      html += `<div style="text-align:center;margin-top:24px;">
+        <button onclick="closeDetail()" style="padding:12px 36px;border-radius:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:var(--transition);" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">← Back to Dashboard</button>
+      </div>`;
 
       el.innerHTML = html;
       document.getElementById('detailOverlay').classList.add('active');
