@@ -1029,11 +1029,16 @@
       // Skills
       html += `<div class="card"><h3>Skills Runs</h3>`;
       if (skills.length > 0) {
+        const eventDateMap = new Map();
+        events.forEach((e, idx) => eventDateMap.set(e.id, e.start || idx));
         html += `<table><thead><tr><th>Event</th><th>Type</th><th>Score</th><th>Rank</th><th>Attempts</th></tr></thead><tbody>`;
         [...skills].sort((a, b) => {
-          const dateA = a.event?.start ? new Date(a.event.start) : new Date(0);
-          const dateB = b.event?.start ? new Date(b.event.start) : new Date(0);
-          if (dateA - dateB !== 0) return dateA - dateB;
+          const aEventId = a.event?.id || 0;
+          const bEventId = b.event?.id || 0;
+          const aDate = eventDateMap.has(aEventId) ? new Date(eventDateMap.get(aEventId)) : new Date(0);
+          const bDate = eventDateMap.has(bEventId) ? new Date(eventDateMap.get(bEventId)) : new Date(0);
+          const dateDiff = aDate - bDate;
+          if (dateDiff !== 0) return dateDiff;
           return (a.type || '').localeCompare(b.type || '');
         }).forEach(s => {
           html += `<tr><td>${s.event?.name || '?'}</td><td>${s.type === 'driver' ? 'Driver' : 'Programming'}</td><td><strong>${s.score}</strong></td><td>#${s.rank ?? '-'}</td><td>${s.attempts ?? '-'}</td></tr>`;
