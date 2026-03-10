@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VEX IQ Scout Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1e5f3a, #1b6920);
+      padding: 20px 24px;
+      text-align: center;
+      border-bottom: 2px solid #22c55e;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .header p {
+      color: #94a3b8;
+      margin-top: 4px;
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    /* Match Dashboard */
+    .dashboard {
+      margin-bottom: 24px;
+    }
+
+    .dash-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .dash-title h2 {
+      font-size: 20px;
+      color: #fff;
+    }
+
+    .dash-title button {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .dash-title button:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+    .match-card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      border: 1px solid #334155;
+    }
+
+    .match-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .match-label {
+      background: #22c55e;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .match-name {
+      flex: 1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .match-name:focus {
+      border-color: #22c55e;
+    }
+
+    .partners-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .partner-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .partner-role {
+      font-size: 12px;
+      color: #64748b;
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    .partner-input {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      max-width: 160px;
+    }
+
+    .partner-input:focus {
+      border-color: #22c55e;
+    }
+
+    .btn-lookup {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background: #3b82f6;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-lookup:hover {
+      background: #2563eb;
+    }
+
+    .btn-lookup:disabled {
+      background: #475569;
+      cursor: not-allowed;
+    }
+
+    .btn-lookup.loading {
+      background: #475569;
+    }
+
+    .rating-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 140px;
+    }
+
+    .rating-stars {
+      color: #fbbf24;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .rating-num {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    .rating-name {
+      color: #cbd5e1;
+      font-size: 12px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .no-rating {
+      color: #475569;
+      font-size: 12px;
+      font-style: italic;
+    }
+
+
+    .btn-remove {
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .btn-remove:hover {
+      color: #f87171;
+    }
+
+    /* Detail Overlay */
+    .detail-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0f172aee;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .detail-overlay.active {
+      display: block;
+    }
+
+    .detail-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    .detail-close {
+      position: fixed;
+      top: 12px;
+      right: 20px;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 101;
+    }
+
+    .detail-close:hover {
+      background: #dc2626;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #334155;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .team-header {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .team-info h2 {
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .team-info p {
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .team-rating {
+      text-align: center;
+    }
+
+    .team-rating .stars {
+      font-size: 36px;
+      color: #fbbf24;
+      letter-spacing: 2px;
+    }
+
+    .team-rating .score {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-item {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-item .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #22c55e;
+    }
+
+    .stat-item .label {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+      font-size: 14px;
+    }
+
+    th {
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    td {
+      color: #e2e8f0;
+    }
+
+    tr:hover td {
+      background: #1a2540;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-world {
+      background: #7c3aed33;
+      color: #a78bfa;
+    }
+
+    .badge-sig {
+      background: #db277733;
+      color: #f472b6;
+    }
+
+    .badge-national {
+      background: #0891b233;
+      color: #22d3ee;
+    }
+
+    .badge-state {
+      background: #059669aa;
+      color: #6ee7b7;
+    }
+
+    .badge-regional {
+      background: #d9770633;
+      color: #fdba74;
+    }
+
+    .badge-other {
+      background: #47556933;
+      color: #94a3b8;
+    }
+
+    .strength-bar {
+      display: inline-block;
+      width: 60px;
+      height: 8px;
+      background: #334155;
+      border-radius: 4px;
+      overflow: hidden;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    .rank-good {
+      color: #4ade80;
+    }
+
+    .rank-ok {
+      color: #fbbf24;
+    }
+
+    .rank-bad {
+      color: #f87171;
+    }
+
+    .no-data {
+      color: #64748b;
+      font-style: italic;
+      padding: 12px 0;
+    }
+
+    .loading-sm {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #334155;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error {
+      background: #991b1b33;
+      border: 1px solid #991b1b;
+      border-radius: 8px;
+      padding: 16px;
+      color: #fca5a5;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .partner-row {
+        flex-wrap: wrap;
+      }
+
+      .partner-role {
+        width: 100%;
+      }
+
+      .rating-badge {
+        min-width: auto;
+      }
+
+      .team-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 8px 6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>VEX IQ Scout Dashboard</h1>
+    <p>Manage your matches, scout alliance partners, and track team ratings</p>
+  </div>
+
+  <div class="container">
+    <div class="dashboard" id="dashboard"></div>
+  </div>
+
+  <!-- Detail Overlay -->
+  <div id="detailOverlay" class="detail-overlay">
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+    <div class="detail-content" id="detailContent"></div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://www.robotevents.com/api/v2';
+    const VIQRC_PROGRAM_ID = 41;
+    const EMBEDDED_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTJkNDgyNWY4YjM1ZmM0ZDFkZTk4OWVmZGVhYWY1ZmQ1ZWNiZDViMGYwNzI1MmI0NzVlODdlODg4ZDBlODk3MmI3NjgwNWYxMmJhMWI4MTAiLCJpYXQiOjE3NzMxNTE1ODUuODMyNjAwMSwibmJmIjoxNzczMTUxNTg1LjgzMjYwMiwiZXhwIjoyNzE5OTI2Mzg1LjgyMzM1MDksInN1YiI6Ijk5NTEzIiwic2NvcGVzIjpbXX0.J25lIQa-X9zCVuMVWxDvvEHHOn030BKb7bPytEzNIxtD4HYKLMUbN0H6DGzwxtCE-7DPB5Ve1EhXmVLFNSUDkNpEPF5i9wI0aynwD_iJ9npjh_hHIdZRcZU7FWQa5MmUi2EXpx4UV_bkX5KtVFF4cd75M1koRgE78uFB1_zg8Q4QeorQ0lbOmSY8nwOwhO85xhDCuXx9offbysmXUc4FeNismH2U9RfZQqQZ5LbqtGktWDWLJOlCvCURnA0YQQbv5rUSiabV42bQRv7QnS94O0WpmLZ-xnXgma-UsfXvrrnjYNx8Ypzo4ikIacKdOa-4ctdFQW2Jbof8HdLutlB4PxvcUH1lIl8enf4YatMnDDvSD-K6gR49JIzziqfLmPRobnanyxEKyYlV_BxxZRUQCPiQE3uhGBN7gJuXn9I82loGzufs2j6DYfNpup-dbYeXEJKRJdtOTWya3hyvCKT-IMTWf6_DzwmHYf_6ZMmUQpJhytM-cfDhnyOfqGmleYR7u2ih0YG4LY0ht-CScEqwdyg43EvuBSHiMKdjWPCsXEwpfPQ1xFVilXbWt_gCuLHtALy6S53nS0Zt6by35Tpr6JPORywOazfsa08kL4nVYvM39YunjqVLh1vVFHuaaQoL6d7tcEMmBAHWMspRzNL9daRzY5MLY-iYj718LwxT-00';
+    let currentSeasonId = null;
+
+    // ===== Data Model =====
+    const DEFAULT_MATCHES = 8;
+
+    function loadData() {
+      const saved = localStorage.getItem('vex_iq_dashboard');
+      if (saved) return JSON.parse(saved);
+      // Default: 8 matches, each with empty partners
+      const matches = [];
+      for (let i = 0; i < DEFAULT_MATCHES; i++) {
+        matches.push({
+          name: `Match ${i + 1}`,
+          partners: [{ number: '', rating: null, teamName: '' }]
+        });
+      }
+      return { matches };
+    }
+
+    function saveData(data) {
+      localStorage.setItem('vex_iq_dashboard', JSON.stringify(data));
+    }
+
+    let dashData = loadData();
+
+    // ===== Render Dashboard =====
+    function renderDashboard() {
+      const el = document.getElementById('dashboard');
+      let html = `
+    <div class="dash-title">
+      <h2>My Matches</h2>
+      <div>
+        <button onclick="addMatch()">+ Add Match</button>
+        <button onclick="if(confirm('Clear all data?')){localStorage.removeItem('vex_iq_dashboard');dashData=loadData();renderDashboard();}">Reset</button>
+      </div>
+    </div>`;
+
+      dashData.matches.forEach((match, mi) => {
+        html += `
+    <div class="match-card">
+      <div class="match-header">
+        <span class="match-label">#${mi + 1}</span>
+        <input class="match-name" value="${escHtml(match.name)}" onchange="updateMatchName(${mi}, this.value)" placeholder="Match name..." />
+        <button class="btn-remove" onclick="removeMatch(${mi})" title="Delete match">✕</button>
+      </div>
+      <div class="partners-grid">`;
+
+        match.partners.forEach((p, pi) => {
+          const hasRating = p.rating !== null && p.rating !== undefined;
+          html += `
+        <div class="partner-row">
+          <span class="partner-role">Partner ${pi + 1}</span>
+          <input class="partner-input" value="${escHtml(p.number)}" onchange="updatePartnerNum(${mi},${pi},this.value)" placeholder="Team #" />
+          <button class="btn-lookup" onclick="lookupPartner(${mi},${pi})" id="btn-${mi}-${pi}">Lookup</button>
+          <div class="rating-badge">
+            ${hasRating ? `
+              <span class="rating-stars">${renderStarsSmall(p.rating)}</span>
+              <span class="rating-num">${p.rating}/5</span>
+              <span class="rating-name" title="${escHtml(p.teamName)}">${escHtml(p.teamName)}</span>
+            ` : `<span class="no-rating">${p.number ? 'Not yet scouted' : ''}</span>`}
+          </div>
+          <button class="btn-remove" onclick="removePartner(${mi},${pi})" title="Remove">&minus;</button>
+        </div>`;
+        });
+
+        html += `
+      </div>
+    </div>`;
+      });
+
+      el.innerHTML = html;
+    }
+
+    function escHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function renderStarsSmall(rating) {
+      const full = Math.floor(rating);
+      const half = rating - full >= 0.4;
+      let s = '';
+      for (let i = 0; i < full; i++) s += '★';
+      if (half) s += '☆';
+      const empty = 5 - full - (half ? 1 : 0);
+      for (let i = 0; i < empty; i++) s += '☆';
+      return s;
+    }
+
+    function renderStars(rating) { return renderStarsSmall(rating); }
+
+    // ===== Dashboard Actions =====
+    function updateMatchName(mi, val) {
+      dashData.matches[mi].name = val;
+      saveData(dashData);
+    }
+
+    function updatePartnerNum(mi, pi, val) {
+      dashData.matches[mi].partners[pi].number = val.trim().toUpperCase();
+      dashData.matches[mi].partners[pi].rating = null;
+      dashData.matches[mi].partners[pi].teamName = '';
+      saveData(dashData);
+      renderDashboard();
+    }
+
+
+
+    function removePartner(mi, pi) {
+      if (dashData.matches[mi].partners.length <= 1) return;
+      dashData.matches[mi].partners.splice(pi, 1);
+      saveData(dashData);
+      renderDashboard();
+    }
+
+    function addMatch() {
+      const n = dashData.matches.length + 1;
+      dashData.matches.push({ name: `Match ${n}`, partners: [{ number: '', rating: null, teamName: '' }] });
+      saveData(dashData);
+      renderDashboard();
+    }
+
+    function removeMatch(mi) {
+      if (!confirm(`Delete "${dashData.matches[mi].name}"?`)) return;
+      dashData.matches.splice(mi, 1);
+      saveData(dashData);
+      renderDashboard();
+    }
+
+    // ===== API =====
+    function getToken() { return EMBEDDED_TOKEN; }
+
+    async function apiFetch(url, token) {
+      const headers = { 'Accept': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(url, { headers });
+      if (!res.ok) throw new Error(`API Error ${res.status}: ${res.statusText}`);
+      return res.json();
+    }
+
+    async function apiFetchAll(url, token) {
+      let allData = []; let page = 1;
+      while (true) {
+        const sep = url.includes('?') ? '&' : '?';
+        const data = await apiFetch(`${url}${sep}page=${page}&per_page=250`, token);
+        allData = allData.concat(data.data || []);
+        if (!data.meta || page >= data.meta.last_page) break;
+        page++;
+      }
+      return allData;
+    }
+
+    async function getActiveSeason(token) {
+      const data = await apiFetch(`${API_BASE}/seasons?program[]=${VIQRC_PROGRAM_ID}&active=true`, token);
+      if (data.data && data.data.length > 0) {
+        return data.data.sort((a, b) => b.id - a.id)[0];
+      }
+      throw new Error('Active season not found');
+    }
+
+    async function fetchWorldSkills(seasonId, teamNum) {
+      try {
+        const res = await fetch(`https://www.robotevents.com/api/seasons/${seasonId}/skills`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        const entry = data.find(e => e.team && e.team.team === teamNum);
+        return { entry, total: data.length };
+      } catch { return null; }
+    }
+
+    // ===== Lookup Partner =====
+    async function lookupPartner(mi, pi) {
+      const partner = dashData.matches[mi].partners[pi];
+      const teamNum = partner.number.trim().toUpperCase();
+      if (!teamNum) return;
+
+      const btn = document.getElementById(`btn-${mi}-${pi}`);
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading-sm"></span>';
+
+      const token = getToken();
+      try {
+        if (!currentSeasonId) {
+          const season = await getActiveSeason(token);
+          currentSeasonId = season.id;
+        }
+
+        const teamData = await apiFetch(`${API_BASE}/teams?number[]=${encodeURIComponent(teamNum)}&program[]=${VIQRC_PROGRAM_ID}`, token);
+        if (!teamData.data || teamData.data.length === 0) {
+          alert(`Team "${teamNum}" not found. Check the number.`);
+          btn.disabled = false; btn.textContent = 'Lookup';
+          return;
+        }
+        const team = teamData.data[0];
+        const teamId = team.id;
+
+        const [events, rankings, skills, awards, worldSkillsRaw] = await Promise.all([
+          apiFetchAll(`${API_BASE}/teams/${teamId}/events?season[]=${currentSeasonId}`, token),
+          apiFetchAll(`${API_BASE}/teams/${teamId}/rankings?season[]=${currentSeasonId}`, token),
+          apiFetchAll(`${API_BASE}/teams/${teamId}/skills?season[]=${currentSeasonId}`, token),
+          apiFetchAll(`${API_BASE}/teams/${teamId}/awards?season[]=${currentSeasonId}`, token),
+          fetchWorldSkills(currentSeasonId, teamNum)
+        ]);
+
+        const rating = calcTeamRating(rankings, skills, events, worldSkillsRaw, awards);
+
+        // Write back to dashboard
+        partner.rating = rating;
+        partner.teamName = team.team_name || teamNum;
+        saveData(dashData);
+        renderDashboard();
+
+        // Show detail overlay
+        showDetail(team, events, rankings, skills, awards, worldSkillsRaw, rating);
+      } catch (err) {
+        alert(`Error: ${err.message}`);
+        console.error(err);
+      }
+      btn.disabled = false;
+      btn.textContent = 'Lookup';
+    }
+
+    // ===== Rating Calc =====
+    function getLevelBadge(level) {
+      const map = { 'World': ['badge-world', 'World'], 'Signature': ['badge-sig', 'Signature'], 'National': ['badge-national', 'National'], 'State': ['badge-state', 'State'], 'Regional': ['badge-regional', 'Regional'] };
+      const [cls, label] = map[level] || ['badge-other', level || 'Other'];
+      return `<span class="badge ${cls}">${label}</span>`;
+    }
+
+    function getEventStrength(level, teamCount) {
+      const levelScore = { 'World': 5, 'Signature': 4.5, 'National': 3.5, 'State': 3, 'Regional': 2.5 };
+      let base = levelScore[level] || 2;
+      if (teamCount >= 48) base = Math.min(5, base + 0.5);
+      else if (teamCount >= 32) base = Math.min(5, base + 0.25);
+      else if (teamCount < 16) base = Math.max(1, base - 0.5);
+      return Math.round(base * 10) / 10;
+    }
+
+    function calcTeamRating(rankings, skills, events, worldSkills, awards) {
+      let score = 0, factors = 0;
+      if (rankings.length > 0) {
+        const pcts = rankings.map(r => { const t = r.event ? (r.event.teamCount || 30) : 30; return 1 - (r.rank - 1) / Math.max(t - 1, 1); });
+        score += (pcts.reduce((a, b) => a + b, 0) / pcts.length) * 5 * 3; factors += 3;
+      }
+      const tw = rankings.reduce((s, r) => s + (r.wins || 0), 0);
+      const tl = rankings.reduce((s, r) => s + (r.losses || 0), 0);
+      const tt = rankings.reduce((s, r) => s + (r.ties || 0), 0);
+      const tm = tw + tl + tt;
+      if (tm > 0) { score += ((tw + tt * 0.5) / tm) * 5 * 2; factors += 2; }
+      if (worldSkills?.entry) { const p = 1 - (worldSkills.entry.rank - 1) / Math.max(worldSkills.total - 1, 1); score += p * 5 * 2; factors += 2; }
+      if (events.length > 0) { const s = events.map(e => getEventStrength(e.level, 30)); score += (s.reduce((a, b) => a + b, 0) / s.length); factors += 1; }
+      if (awards.length > 0) { score += Math.min(awards.length * 0.5, 5); factors += 1; }
+      return factors === 0 ? 0 : Math.round((score / factors) * 10) / 10;
+    }
+
+    // ===== Detail Overlay =====
+    function showDetail(team, events, rankings, skills, awards, worldSkills, rating) {
+      const el = document.getElementById('detailContent');
+      const driverScores = skills.filter(s => s.type === 'driver').map(s => s.score);
+      const progScores = skills.filter(s => s.type === 'programming').map(s => s.score);
+      const bestDriver = driverScores.length > 0 ? Math.max(...driverScores) : null;
+      const bestProg = progScores.length > 0 ? Math.max(...progScores) : null;
+      const tw = rankings.reduce((s, r) => s + (r.wins || 0), 0);
+      const tl = rankings.reduce((s, r) => s + (r.losses || 0), 0);
+      const tt = rankings.reduce((s, r) => s + (r.ties || 0), 0);
+      const wsRank = worldSkills?.entry?.rank || 'N/A';
+      const wsTotal = worldSkills?.total || '?';
+      const wsScore = worldSkills?.entry?.scores?.score ?? 'N/A';
+
+      let html = '';
+
+      html += `<div class="team-header">
+    <div class="team-info">
+      <h2>${team.number} — ${team.team_name || 'Unknown'}</h2>
+      <p>${team.organization || ''} | ${team.location?.city || ''}, ${team.location?.region || ''}, ${team.location?.country || ''}</p>
+      <p style="margin-top:4px; color:#64748b; font-size:13px;">Grade: ${team.grade || 'N/A'}</p>
+    </div>
+    <div class="team-rating">
+      <div class="stars" style="font-size:36px;color:#fbbf24;letter-spacing:2px;">${renderStars(rating)}</div>
+      <div class="score" style="font-size:14px;color:#94a3b8;margin-top:4px;">Overall Rating ${rating} / 5.0</div>
+    </div>
+  </div>`;
+
+      html += `<div class="card"><h3>Season Overview</h3><div class="stats-grid">
+    <div class="stat-item"><div class="value">${events.length}</div><div class="label">Events</div></div>
+    <div class="stat-item"><div class="value">${tw}W-${tl}L-${tt}T</div><div class="label">Record</div></div>
+    <div class="stat-item"><div class="value">${wsRank}</div><div class="label">Skills Rank / ${wsTotal}</div></div>
+    <div class="stat-item"><div class="value">${wsScore}</div><div class="label">Skills High</div></div>
+    <div class="stat-item"><div class="value">${bestDriver ?? 'N/A'}</div><div class="label">Teamwork High</div></div>
+    <div class="stat-item"><div class="value">${bestProg ?? 'N/A'}</div><div class="label">Prog High</div></div>
+  </div></div>`;
+
+      // Event Results
+      html += `<div class="card"><h3>Event Results</h3>`;
+      if (rankings.length > 0) {
+        const eventMap = new Map();
+        rankings.forEach(r => { const eid = r.event?.id || 0; if (!eventMap.has(eid)) eventMap.set(eid, { event: r.event, rankings: [] }); eventMap.get(eid).rankings.push(r); });
+        const eventDetails = new Map();
+        events.forEach(e => eventDetails.set(e.id, e));
+        html += `<table><thead><tr><th>Event</th><th>Level</th><th>Rank</th><th>Record</th><th>WP/AP/SP</th><th>Str</th></tr></thead><tbody>`;
+        for (const [eid, data] of eventMap) {
+          const evt = eventDetails.get(eid) || data.event || {};
+          const level = evt.level || 'Other';
+          for (const r of data.rankings) {
+            const str = getEventStrength(level, 30);
+            const pct = (str / 5) * 100;
+            const col = str >= 4 ? '#f472b6' : str >= 3 ? '#fbbf24' : '#60a5fa';
+            const rc = r.rank <= 3 ? 'rank-good' : r.rank <= 10 ? 'rank-ok' : 'rank-bad';
+            html += `<tr><td>${evt.name || data.event?.name || '?'}</td><td>${getLevelBadge(level)}</td><td class="${rc}"><strong>#${r.rank}</strong></td><td>${r.wins || 0}W-${r.losses || 0}L-${r.ties || 0}T</td><td>${r.wp ?? '-'}/${r.ap ?? '-'}/${r.sp ?? '-'}</td><td>${str}<div class="strength-bar"><div class="strength-fill" style="width:${pct}%;background:${col}"></div></div></td></tr>`;
+          }
+        }
+        html += '</tbody></table>';
+      } else { html += '<p class="no-data">No event data this season</p>'; }
+      html += '</div>';
+
+      // Skills
+      html += `<div class="card"><h3>Skills Runs</h3>`;
+      if (skills.length > 0) {
+        html += `<table><thead><tr><th>Event</th><th>Type</th><th>Score</th><th>Rank</th><th>Attempts</th></tr></thead><tbody>`;
+        [...skills].sort((a, b) => b.score - a.score).forEach(s => {
+          html += `<tr><td>${s.event?.name || '?'}</td><td>${s.type === 'driver' ? 'Teamwork' : 'Programming'}</td><td><strong>${s.score}</strong></td><td>#${s.rank ?? '-'}</td><td>${s.attempts ?? '-'}</td></tr>`;
+        });
+        html += '</tbody></table>';
+      } else { html += '<p class="no-data">No skills runs</p>'; }
+      html += '</div>';
+
+      // Awards
+      if (awards.length > 0) {
+        html += `<div class="card"><h3>Awards</h3><table><thead><tr><th>Event</th><th>Award</th></tr></thead><tbody>`;
+        awards.forEach(a => { html += `<tr><td>${a.event?.name || '?'}</td><td>${a.title || a.name || '?'}</td></tr>`; });
+        html += '</tbody></table></div>';
+      }
+
+      html += `<div style="text-align:center;margin-top:20px;">
+    <button onclick="closeDetail()" style="padding:12px 32px;border-radius:8px;border:1px solid #22c55e;background:transparent;color:#22c55e;font-size:16px;cursor:pointer;">Back to Dashboard</button>
+  </div>`;
+
+      el.innerHTML = html;
+      document.getElementById('detailOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail() {
+      document.getElementById('detailOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ===== Init =====
+    renderDashboard();
+  </script>
+
+</body>
+
+</html>
