@@ -1031,7 +1031,7 @@
       if (skills.length > 0) {
         html += `<table><thead><tr><th>Event</th><th>Type</th><th>Score</th><th>Rank</th><th>Attempts</th></tr></thead><tbody>`;
         [...skills].sort((a, b) => b.score - a.score).forEach(s => {
-          html += `<tr><td>${s.event?.name || '?'}</td><td>${s.type === 'driver' ? 'Teamwork' : 'Programming'}</td><td><strong>${s.score}</strong></td><td>#${s.rank ?? '-'}</td><td>${s.attempts ?? '-'}</td></tr>`;
+          html += `<tr><td>${s.event?.name || '?'}</td><td>${s.type === 'driver' ? 'Driver' : 'Programming'}</td><td><strong>${s.score}</strong></td><td>#${s.rank ?? '-'}</td><td>${s.attempts ?? '-'}</td></tr>`;
         });
         html += '</tbody></table>';
       } else { html += '<p class="no-data">No skills runs</p>'; }
