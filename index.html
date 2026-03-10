@@ -1030,7 +1030,12 @@
       html += `<div class="card"><h3>Skills Runs</h3>`;
       if (skills.length > 0) {
         html += `<table><thead><tr><th>Event</th><th>Type</th><th>Score</th><th>Rank</th><th>Attempts</th></tr></thead><tbody>`;
-        [...skills].sort((a, b) => b.score - a.score).forEach(s => {
+        [...skills].sort((a, b) => {
+          const dateA = a.event?.start ? new Date(a.event.start) : new Date(0);
+          const dateB = b.event?.start ? new Date(b.event.start) : new Date(0);
+          if (dateA - dateB !== 0) return dateA - dateB;
+          return (a.type || '').localeCompare(b.type || '');
+        }).forEach(s => {
           html += `<tr><td>${s.event?.name || '?'}</td><td>${s.type === 'driver' ? 'Driver' : 'Programming'}</td><td><strong>${s.score}</strong></td><td>#${s.rank ?? '-'}</td><td>${s.attempts ?? '-'}</td></tr>`;
         });
         html += '</tbody></table>';
