@@ -955,11 +955,7 @@
         const pcts = rankings.map(r => { const t = r.event ? (r.event.teamCount || 30) : 30; return 1 - (r.rank - 1) / Math.max(t - 1, 1); });
         score += (pcts.reduce((a, b) => a + b, 0) / pcts.length) * 5 * 3; factors += 3;
       }
-      const tw = rankings.reduce((s, r) => s + (r.wins || 0), 0);
-      const tl = rankings.reduce((s, r) => s + (r.losses || 0), 0);
-      const tt = rankings.reduce((s, r) => s + (r.ties || 0), 0);
-      const tm = tw + tl + tt;
-      if (tm > 0) { score += ((tw + tt * 0.5) / tm) * 5 * 2; factors += 2; }
+
       if (worldSkills?.entry) { const p = 1 - (worldSkills.entry.rank - 1) / Math.max(worldSkills.total - 1, 1); score += p * 5 * 2; factors += 2; }
       if (events.length > 0) { const s = events.map(e => getEventStrength(e.level, 30)); score += (s.reduce((a, b) => a + b, 0) / s.length); factors += 1; }
       if (awards.length > 0) { score += Math.min(awards.length * 0.5, 5); factors += 1; }
@@ -973,9 +969,10 @@
       const progScores = skills.filter(s => s.type === 'programming').map(s => s.score);
       const bestDriver = driverScores.length > 0 ? Math.max(...driverScores) : null;
       const bestProg = progScores.length > 0 ? Math.max(...progScores) : null;
-      const tw = rankings.reduce((s, r) => s + (r.wins || 0), 0);
-      const tl = rankings.reduce((s, r) => s + (r.losses || 0), 0);
-      const tt = rankings.reduce((s, r) => s + (r.ties || 0), 0);
+      const avgScores = rankings.map(r => r.average_points || 0).filter(v => v > 0);
+      const overallAvg = avgScores.length > 0 ? (avgScores.reduce((a, b) => a + b, 0) / avgScores.length).toFixed(1) : 'N/A';
+      const highScores = rankings.map(r => r.high_score || 0).filter(v => v > 0);
+      const bestHighScore = highScores.length > 0 ? Math.max(...highScores) : 'N/A';
       const wsRank = worldSkills?.entry?.rank || 'N/A';
       const wsTotal = worldSkills?.total || '?';
       const wsScore = worldSkills?.entry?.scores?.score ?? 'N/A';
@@ -996,10 +993,10 @@
 
       html += `<div class="card"><h3>Season Overview</h3><div class="stats-grid">
         <div class="stat-item"><div class="value">${events.length}</div><div class="label">Events</div></div>
-        <div class="stat-item"><div class="value">${tw}W-${tl}L-${tt}T</div><div class="label">Record</div></div>
+        <div class="stat-item"><div class="value">${overallAvg}</div><div class="label">Avg Score</div></div>
+        <div class="stat-item"><div class="value">${bestHighScore}</div><div class="label">High Score</div></div>
         <div class="stat-item"><div class="value">${wsRank}</div><div class="label">Skills Rank / ${wsTotal}</div></div>
-        <div class="stat-item"><div class="value">${wsScore}</div><div class="label">Skills High</div></div>
-        <div class="stat-item"><div class="value">${bestDriver ?? 'N/A'}</div><div class="label">Teamwork High</div></div>
+        <div class="stat-item"><div class="value">${bestDriver ?? 'N/A'}</div><div class="label">Driver High</div></div>
         <div class="stat-item"><div class="value">${bestProg ?? 'N/A'}</div><div class="label">Prog High</div></div>
       </div></div>`;
 
@@ -1010,7 +1007,7 @@
         rankings.forEach(r => { const eid = r.event?.id || 0; if (!eventMap.has(eid)) eventMap.set(eid, { event: r.event, rankings: [] }); eventMap.get(eid).rankings.push(r); });
         const eventDetails = new Map();
         events.forEach(e => eventDetails.set(e.id, e));
-        html += `<table><thead><tr><th>Event</th><th>Level</th><th>Rank</th><th>Record</th><th>WP/AP/SP</th><th>Str</th></tr></thead><tbody>`;
+        html += `<table><thead><tr><th>Event</th><th>Level</th><th>Rank</th><th>Avg Score</th><th>High Score</th><th>Str</th></tr></thead><tbody>`;
         for (const [eid, data] of eventMap) {
           const evt = eventDetails.get(eid) || data.event || {};
           const level = evt.level || 'Other';
@@ -1019,7 +1016,9 @@
             const pct = (str / 5) * 100;
             const col = str >= 4 ? '#a78bfa' : str >= 3 ? '#fbbf24' : '#60a5fa';
             const rc = r.rank <= 3 ? 'rank-good' : r.rank <= 10 ? 'rank-ok' : 'rank-bad';
-            html += `<tr><td>${evt.name || data.event?.name || '?'}</td><td>${getLevelBadge(level)}</td><td class="${rc}"><strong>#${r.rank}</strong></td><td>${r.wins || 0}W-${r.losses || 0}L-${r.ties || 0}T</td><td>${r.wp ?? '-'}/${r.ap ?? '-'}/${r.sp ?? '-'}</td><td>${str}<div class="strength-bar"><div class="strength-fill" style="width:${pct}%;background:${col}"></div></div></td></tr>`;
+            const avg = r.average_points != null ? r.average_points.toFixed(1) : '-';
+            const high = r.high_score ?? '-';
+            html += `<tr><td>${evt.name || data.event?.name || '?'}</td><td>${getLevelBadge(level)}</td><td class="${rc}"><strong>#${r.rank}</strong></td><td>${avg}</td><td><strong>${high}</strong></td><td>${str}<div class="strength-bar"><div class="strength-fill" style="width:${pct}%;background:${col}"></div></div></td></tr>`;
           }
         }
         html += '</tbody></table>';
