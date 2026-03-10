@@ -1060,6 +1060,19 @@
         html += '</tbody></table></div>';
       }
 
+      html += `<div class="card"><h3>Rating Breakdown</h3>
+        <table>
+          <thead><tr><th>Factor</th><th>Weight</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Ranking Percentile</td><td><strong>×3</strong></td><td>Based on team's rank vs. total teams at each event. Higher rank = higher score.</td></tr>
+            <tr><td>World Skills Rank</td><td><strong>×2</strong></td><td>Global skills ranking percentile. Better rank among all teams = higher score.</td></tr>
+            <tr><td>Event Strength</td><td><strong>×1</strong></td><td>Average competition level (World=5, Signature=4.5, National=3.5, State=3, Regional=2.5). Bonus for large events.</td></tr>
+            <tr><td>Awards</td><td><strong>×1</strong></td><td>Each award adds 0.5 points, up to max 5. More awards = higher score.</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:12px;color:var(--text-muted);font-size:12px;">Final rating = weighted average of all available factors, scaled to 5.0. Factors with no data are excluded.</p>
+      </div>`;
+
       html += `<div style="text-align:center;margin-top:24px;">
         <button onclick="closeDetail()" style="padding:12px 36px;border-radius:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:var(--transition);" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">← Back to Dashboard</button>
       </div>`;
