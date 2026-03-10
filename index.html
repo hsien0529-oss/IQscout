@@ -1026,11 +1026,12 @@
       } else { html += '<p class="no-data">No event data this season</p>'; }
       html += '</div>';
 
+      const eventDateMap = new Map();
+      events.forEach((e, idx) => eventDateMap.set(e.id, e.start || idx));
+
       // Skills
       html += `<div class="card"><h3>Skills Runs</h3>`;
       if (skills.length > 0) {
-        const eventDateMap = new Map();
-        events.forEach((e, idx) => eventDateMap.set(e.id, e.start || idx));
         html += `<table><thead><tr><th>Event</th><th>Type</th><th>Score</th><th>Rank</th><th>Attempts</th></tr></thead><tbody>`;
         [...skills].sort((a, b) => {
           const aEventId = a.event?.id || 0;
@@ -1050,7 +1051,13 @@
       // Awards
       if (awards.length > 0) {
         html += `<div class="card"><h3>Awards</h3><table><thead><tr><th>Event</th><th>Award</th></tr></thead><tbody>`;
-        awards.forEach(a => { html += `<tr><td>${a.event?.name || '?'}</td><td>${a.title || a.name || '?'}</td></tr>`; });
+        [...awards].sort((a, b) => {
+          const aId = a.event?.id || 0;
+          const bId = b.event?.id || 0;
+          const aDate = eventDateMap.has(aId) ? new Date(eventDateMap.get(aId)) : new Date(0);
+          const bDate = eventDateMap.has(bId) ? new Date(eventDateMap.get(bId)) : new Date(0);
+          return bDate - aDate;
+        }).forEach(a => { html += `<tr><td>${a.event?.name || '?'}</td><td>${a.title || a.name || '?'}</td></tr>`; });
         html += '</tbody></table></div>';
       }
 
