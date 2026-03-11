@@ -26,8 +26,13 @@ git commit -m "Auto Update VEX IQ Scout Dashboard"
 echo.
 
 echo [3/3] 開始推送到 GitHub...
-:: 確保目前的分支名稱為 main，然後推送到遠端
+:: 確保目前的分支名稱為 main
 git branch -M main
+
+:: 先將遠端 (GitHub) 既有的檔案 (例如 README) 抓下來合併，解決因遠端有檔案導致的拒絕推送問題
+git pull origin main --allow-unrelated-histories --no-edit >nul 2>nul
+
+:: 然後推送到遠端
 git push -u origin main
 
 echo.
