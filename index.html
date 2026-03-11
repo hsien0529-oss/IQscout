@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VEX IQ Scout Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: #1a2035;
+      --bg-input: #0d1321;
+      --border: #252d44;
+      --border-hover: #3b4a6b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #5a6580;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --accent-glow: #6366f133;
+      --green: #10b981;
+      --green-soft: #10b98122;
+      --gold: #f59e0b;
+      --gold-soft: #f59e0b22;
+      --red: #ef4444;
+      --red-soft: #ef444422;
+      --blue: #3b82f6;
+      --blue-hover: #60a5fa;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      background: linear-gradient(135deg, #111827 0%, #1a1040 50%, #111827 100%);
+      padding: 28px 24px 24px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .header h1 span {
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    /* ===== Container ===== */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    /* ===== Dashboard Title ===== */
+    .dash-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .dash-title h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+
+    .dash-title .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dash-title button {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .dash-title button:hover {
+      background: var(--border);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
+    /* ===== Match Cards ===== */
+    .match-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .match-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 2px 16px rgba(99, 102, 241, 0.06);
+    }
+
+    .match-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .match-label {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+      min-width: 38px;
+      text-align: center;
+    }
+
+    .match-name {
+      flex: 1;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .match-name:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .btn-remove-match {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 15px;
+      cursor: pointer;
+      line-height: 1;
+      transition: var(--transition);
+      opacity: 0;
+    }
+
+    .match-card:hover .btn-remove-match {
+      opacity: 1;
+    }
+
+    .btn-remove-match:hover {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    /* ===== Partners Grid ===== */
+    .partners-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .partner-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      transition: var(--transition);
+    }
+
+    .partner-row:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border);
+    }
+
+    .partner-role {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 62px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .partner-input {
+      width: 130px;
+      flex-shrink: 0;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .partner-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .btn-lookup {
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+      letter-spacing: 0.3px;
+    }
+
+    .btn-lookup:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 2px 12px var(--accent-glow);
+    }
+
+    .btn-lookup:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .rating-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rating-stars {
+      color: var(--gold);
+      font-size: 14px;
+      letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+
+    .rating-num {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .rating-name {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 400;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .no-rating {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-style: italic;
+    }
+
+    .btn-remove-partner {
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 15px;
+      cursor: pointer;
+      line-height: 1;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .btn-remove-partner:hover {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    /* ===== Detail Overlay ===== */
+    .detail-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 26, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .detail-overlay.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .detail-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    .detail-close {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 101;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-close:hover {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+    }
+
+    /* ===== Detail Cards ===== */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.2px;
+    }
+
+    .team-header {
+      background: linear-gradient(135deg, var(--bg-card), #1e1545);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .team-info h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .team-info p {
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-size: 13px;
+    }
+
+    .team-rating {
+      text-align: center;
+    }
+
+    .team-rating .stars {
+      font-size: 32px;
+      color: var(--gold);
+      letter-spacing: 2px;
+    }
+
+    .team-rating .score {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* ===== Stats Grid ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .stat-item {
+      background: var(--bg-input);
+      border-radius: 10px;
+      padding: 16px 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .stat-item:hover {
+      border-color: var(--border-hover);
+    }
+
+    .stat-item .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-item .label {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    /* ===== Tables ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      color: var(--text-primary);
+    }
+
+    tr:hover td {
+      background: rgba(99, 102, 241, 0.04);
+    }
+
+    /* ===== Badges ===== */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-world {
+      background: #7c3aed22;
+      color: #a78bfa;
+    }
+
+    .badge-sig {
+      background: #ec489922;
+      color: #f472b6;
+    }
+
+    .badge-national {
+      background: #0891b222;
+      color: #22d3ee;
+    }
+
+    .badge-state {
+      background: #10b98122;
+      color: #6ee7b7;
+    }
+
+    .badge-regional {
+      background: #f59e0b22;
+      color: #fbbf24;
+    }
+
+    .badge-other {
+      background: #64748b22;
+      color: #94a3b8;
+    }
+
+    /* ===== Strength Bar ===== */
+    .strength-bar {
+      display: inline-block;
+      width: 56px;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .rank-good {
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .rank-ok {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .rank-bad {
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    .no-data {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 12px 0;
+      font-size: 13px;
+    }
+
+    /* ===== Loading ===== */
+    .loading-sm {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error {
+      background: var(--red-soft);
+      border: 1px solid #ef444444;
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      color: #fca5a5;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px 12px 60px;
+      }
+
+      .partner-row {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 10px;
+      }
+
+      .partner-role {
+        width: 100%;
+      }
+
+      .partner-input {
+        width: 100%;
+      }
+
+      .rating-badge {
+        min-width: auto;
+        width: 100%;
+      }
+
+      .team-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      table {
+        font-size: 11px;
+      }
+
+      th,
+      td {
+        padding: 8px 6px;
+      }
+
+      .match-card {
+        padding: 14px;
+      }
+
+      .btn-remove-match {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>⚙️ <span>VEX IQ</span> Scout Dashboard</h1>
+    <p>Manage your matches · Scout alliance partners · Track team ratings</p>
+  </div>
+
+  <div class="container">
+    <div class="dashboard" id="dashboard"></div>
+  </div>
+
+  <!-- Detail Overlay -->
+  <div id="detailOverlay" class="detail-overlay">
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+    <div class="detail-content" id="detailContent"></div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://www.robotevents.com/api/v2';
+    const VIQRC_PROGRAM_ID = 41;
+    const EMBEDDED_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTJkNDgyNWY4YjM1ZmM0ZDFkZTk4OWVmZGVhYWY1ZmQ1ZWNiZDViMGYwNzI1MmI0NzVlODdlODg4ZDBlODk3MmI3NjgwNWYxMmJhMWI4MTAiLCJpYXQiOjE3NzMxNTE1ODUuODMyNjAwMSwibmJmIjoxNzczMTUxNTg1LjgzMjYwMiwiZXhwIjoyNzE5OTI2Mzg1LjgyMzM1MDksInN1YiI6Ijk5NTEzIiwic2NvcGVzIjpbXX0.J25lIQa-X9zCVuMVWxDvvEHHOn030BKb7bPytEzNIxtD4HYKLMUbN0H6DGzwxtCE-7DPB5Ve1EhXmVLFNSUDkNpEPF5i9wI0aynwD_iJ9npjh_hHIdZRcZU7FWQa5MmUi2EXpx4UV_bkX5KtVFF4cd75M1koRgE78uFB1_zg8Q4QeorQ0lbOmSY8nwOwhO85xhDCuXx9offbysmXUc4FeNismH2U9RfZQqQZ5LbqtGktWDWLJOlCvCURnA0YQQbv5rUSiabV42bQRv7QnS94O0WpmLZ-xnXgma-UsfXvrrnjYNx8Ypzo4ikIacKdOa-4ctdFQW2Jbof8HdLutlB4PxvcUH1lIl8enf4YatMnDDvSD-K6gR49JIzziqfLmPRobnanyxEKyYlV_BxxZRUQCPiQE3uhGBN7gJuXn9I82loGzufs2j6DYfNpup-dbYeXEJKRJdtOTWya3hyvCKT-IMTWf6_DzwmHYf_6ZMmUQpJhytM-cfDhnyOfqGmleYR7u2ih0YG4LY0ht-CScEqwdyg43EvuBSHiMKdjWPCsXEwpfPQ1xFVilXbWt_gCuLHtALy6S53nS0Zt6by35Tpr6JPORywOazfsa08kL4nVYvM39YunjqVLh1vVFHuaaQoL6d7tcEMmBAHWMspRzNL9daRzY5MLY-iYj718LwxT-00';
+    let currentSeasonId = null;
+
+    // ===== Data Model =====
+    const DEFAULT_MATCHES = 8;
+
+    function loadData() {
+      const saved = localStorage.getItem('vex_iq_dashboard');
+      if (saved) return JSON.parse(saved);
+      const matches = [];
+      for (let i = 0; i < DEFAULT_MATCHES; i++) {
+        matches.push({
+          name: `Match ${i + 1}`,
+          partners: [{ number: '', rating: null, teamName: '' }]
+        });
+      }
+      return { matches };
+    }
+
+    function saveData(data) {
+      localStorage.setItem('vex_iq_dashboard', JSON.stringify(data));
+    }
+
+    let dashData = loadData();
+
+    // ===== Render Dashboard =====
+    function renderDashboard() {
+      const el = document.getElementById('dashboard');
+      let html = `
+        <div class="dash-title">
+          <h2>My Matches</h2>
+          <div class="btn-group">
+            <button onclick="addMatch()">+ Add Match</button>
+            <button onclick="if(confirm('Clear all data?')){localStorage.removeItem('vex_iq_dashboard');dashData=loadData();renderDashboard();}">Reset</button>
+          </div>
+        </div>`;
+
+      dashData.matches.forEach((match, mi) => {
+        html += `
+        <div class="match-card">
+          <div class="match-header">
+            <span class="match-label">#${mi + 1}</span>
+            <input class="match-name" value="${escHtml(match.name)}" onchange="updateMatchName(${mi}, this.value)" placeholder="Match name..." />
+            <button class="btn-remove-match" onclick="removeMatch(${mi})" title="Delete match">✕</button>
+          </div>
+          <div class="partners-grid">`;
+
+        match.partners.forEach((p, pi) => {
+          const hasRating = p.rating !== null && p.rating !== undefined;
+          html += `
+            <div class="partner-row">
+              <span class="partner-role">${pi === 0 ? 'Alliance' : 'Partner ' + (pi + 1)}</span>
+              <input class="partner-input" value="${escHtml(p.number)}" onchange="updatePartnerNum(${mi},${pi},this.value)" placeholder="Team #" />
+              <button class="btn-lookup" onclick="lookupPartner(${mi},${pi})" id="btn-${mi}-${pi}">Lookup</button>
+              <div class="rating-badge">
+                ${hasRating ? `
+                  <span class="rating-stars">${renderStarsSmall(p.rating)}</span>
+                  <span class="rating-num">${p.rating}/5</span>
+                  <span class="rating-name" title="${escHtml(p.teamName)}">${escHtml(p.teamName)}</span>
+                ` : `<span class="no-rating">${p.number ? 'Not yet scouted' : ''}</span>`}
+              </div>
+              <button class="btn-remove-partner" onclick="removePartner(${mi},${pi})" title="Remove">&minus;</button>
+            </div>`;
+        });
+
+        html += `
+          </div>
+        </div>`;
+      });
+
+      el.innerHTML = html;
+    }
+
+    function escHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function renderStarsSmall(rating) {
+      const full = Math.floor(rating);
+      const half = rating - full >= 0.4;
+      let s = '';
+      for (let i = 0; i < full; i++) s += '★';
+      if (half) s += '☆';
+      const empty = 5 - full - (half ? 1 : 0);
+      for (let i = 0; i < empty; i++) s += '☆';
+      return s;
+    }
+
+    function renderStars(rating) { return renderStarsSmall(rating); }
+
+    // ===== Dashboard Actions =====
+    function updateMatchName(mi, val) {
+      dashData.matches[mi].name = val;
+      saveData(dashData);
+    }
+
+    function updatePartnerNum(mi, pi, val) {
+      dashData.matches[mi].partners[pi].number = val.trim().toUpperCase();
+      dashData.matches[mi].partners[pi].rating = null;
+      dashData.matches[mi].partners[pi].teamName = '';
+      saveData(dashData);
+      renderDashboard();
+    }
+
+    function removePartner(mi, pi) {
+      if (dashData.matches[mi].partners.length <= 1) return;
+      dashData.matches[mi].partners.splice(pi, 1);
+      saveData(dashData);
+      renderDashboard();
+    }
+
+    function addMatch() {
+      const n = dashData.matches.length + 1;
+      dashData.matches.push({ name: `Match ${n}`, partners: [{ number: '', rating: null, teamName: '' }] });
+      saveData(dashData);
+      renderDashboard();
+    }
+
+    function removeMatch(mi) {
+      if (!confirm(`Delete "${dashData.matches[mi].name}"?`)) return;
+      dashData.matches.splice(mi, 1);
+      saveData(dashData);
+      renderDashboard();
+    }
+
+    // ===== API =====
+    function getToken() { return EMBEDDED_TOKEN; }
+
+    async function apiFetch(url, token) {
+      const headers = { 'Accept': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(url, { headers });
+      if (!res.ok) throw new Error(`API Error ${res.status}: ${res.statusText}`);
+      return res.json();
+    }
+
+    async function apiFetchAll(url, token) {
+      let allData = []; let page = 1;
+      while (true) {
+        const sep = url.includes('?') ? '&' : '?';
+        const data = await apiFetch(`${url}${sep}page=${page}&per_page=250`, token);
+        allData = allData.concat(data.data || []);
+        if (!data.meta || page >= data.meta.last_page) break;
+        page++;
+      }
+      return allData;
+    }
+
+    async function getActiveSeason(token) {
+      const data = await apiFetch(`${API_BASE}/seasons?program[]=${VIQRC_PROGRAM_ID}&active=true`, token);
+      if (data.data && data.data.length > 0) {
+        return data.data.sort((a, b) => b.id - a.id)[0];
+      }
+      throw new Error('Active season not found');
+    }
+
+    async function fetchWorldSkills(seasonId, teamNum) {
+      try {
+        const res = await fetch(`https://www.robotevents.com/api/seasons/${seasonId}/skills?grade_level=All`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        const entry = data.find(e => e.team && e.team.team === teamNum);
+        return { entry, total: data.length };
+      } catch { return null; }
+    }
+
+    // ===== Lookup Partner =====
+    async function lookupPartner(mi, pi) {
+      const partner = dashData.matches[mi].partners[pi];
+      const teamNum = partner.number.trim().toUpperCase();
+      if (!teamNum) return;
+
+      const btn = document.getElementById(`btn-${mi}-${pi}`);
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading-sm"></span>';
+
+      const token = getToken();
+      try {
+        if (!currentSeasonId) {
+          const season = await getActiveSeason(token);
+          currentSeasonId = season.id;
+        }
+
+        const teamData = await apiFetch(`${API_BASE}/teams?number[]=${encodeURIComponent(teamNum)}&program[]=${VIQRC_PROGRAM_ID}`, token);
+        if (!teamData.data || teamData.data.length === 0) {
+          alert(`Team "${teamNum}" not found. Check the number.`);
+          btn.disabled = false; btn.textContent = 'Lookup';
+          return;
+        }
+        const team = teamData.data[0];
+        const teamId = team.id;
+
+        const [events, rankings, skills, awards, worldSkillsRaw] = await Promise.all([
+          apiFetchAll(`${API_BASE}/teams/${teamId}/events?season[]=${currentSeasonId}`, token),
+          apiFetchAll(`${API_BASE}/teams/${teamId}/rankings?season[]=${currentSeasonId}`, token),
+          apiFetchAll(`${API_BASE}/teams/${teamId}/skills?season[]=${currentSeasonId}`, token),
+          apiFetchAll(`${API_BASE}/teams/${teamId}/awards?season[]=${currentSeasonId}`, token),
+          fetchWorldSkills(currentSeasonId, teamNum)
+        ]);
+
+        const rating = calcTeamRating(rankings, skills, events, worldSkillsRaw, awards);
+
+        partner.rating = rating;
+        partner.teamName = team.team_name || teamNum;
+        saveData(dashData);
+        renderDashboard();
+
+        showDetail(team, events, rankings, skills, awards, worldSkillsRaw, rating);
+      } catch (err) {
+        alert(`Error: ${err.message}`);
+        console.error(err);
+      }
+      btn.disabled = false;
+      btn.textContent = 'Lookup';
+    }
+
+    // ===== Rating Calc =====
+    function getLevelBadge(level) {
+      const map = { 'World': ['badge-world', 'World'], 'Signature': ['badge-sig', 'Signature'], 'National': ['badge-national', 'National'], 'State': ['badge-state', 'State'], 'Regional': ['badge-regional', 'Regional'] };
+      const [cls, label] = map[level] || ['badge-other', level || 'Other'];
+      return `<span class="badge ${cls}">${label}</span>`;
+    }
+
+    function getEventStrength(level, teamCount) {
+      const levelScore = { 'World': 5, 'Signature': 4.5, 'National': 3.5, 'State': 3, 'Regional': 2.5 };
+      let base = levelScore[level] || 2;
+      if (teamCount >= 48) base = Math.min(5, base + 0.5);
+      else if (teamCount >= 32) base = Math.min(5, base + 0.25);
+      else if (teamCount < 16) base = Math.max(1, base - 0.5);
+      return Math.round(base * 10) / 10;
+    }
+
+    function calcTeamRating(rankings, skills, events, worldSkills, awards) {
+      let score = 0, factors = 0;
+      if (rankings.length > 0) {
+        const pcts = rankings.map(r => { const t = r.event ? (r.event.teamCount || 30) : 30; return 1 - (r.rank - 1) / Math.max(t - 1, 1); });
+        score += (pcts.reduce((a, b) => a + b, 0) / pcts.length) * 5 * 3; factors += 3;
+      }
+
+      if (worldSkills?.entry) { const p = 1 - (worldSkills.entry.rank - 1) / Math.max(worldSkills.total - 1, 1); score += p * 5 * 2; factors += 2; }
+      if (events.length > 0) { const s = events.map(e => getEventStrength(e.level, 30)); score += (s.reduce((a, b) => a + b, 0) / s.length); factors += 1; }
+      if (awards.length > 0) { score += Math.min(awards.length * 0.5, 5); factors += 1; }
+      return factors === 0 ? 0 : Math.round((score / factors) * 10) / 10;
+    }
+
+    // ===== Detail Overlay =====
+    function showDetail(team, events, rankings, skills, awards, worldSkills, rating) {
+      const el = document.getElementById('detailContent');
+      const driverScores = skills.filter(s => s.type === 'driver').map(s => s.score);
+      const progScores = skills.filter(s => s.type === 'programming').map(s => s.score);
+      const bestDriver = driverScores.length > 0 ? Math.max(...driverScores) : null;
+      const bestProg = progScores.length > 0 ? Math.max(...progScores) : null;
+      const avgScores = rankings.map(r => r.average_points || 0).filter(v => v > 0);
+      const overallAvg = avgScores.length > 0 ? (avgScores.reduce((a, b) => a + b, 0) / avgScores.length).toFixed(1) : 'N/A';
+      const highScores = rankings.map(r => r.high_score || 0).filter(v => v > 0);
+      const bestHighScore = highScores.length > 0 ? Math.max(...highScores) : 'N/A';
+      const wsRank = worldSkills?.entry?.rank || 'N/A';
+      const wsTotal = worldSkills?.total || '?';
+      const wsScore = worldSkills?.entry?.scores?.score ?? 'N/A';
+
+      let html = '';
+
+      html += `<div class="team-header">
+        <div class="team-info">
+          <h2>${team.number} — ${team.team_name || 'Unknown'}</h2>
+          <p>${team.organization || ''} | ${team.location?.city || ''}, ${team.location?.region || ''}, ${team.location?.country || ''}</p>
+          <p style="margin-top:4px; color:var(--text-muted); font-size:12px;">Grade: ${team.grade || 'N/A'}</p>
+        </div>
+        <div class="team-rating">
+          <div class="stars">${renderStars(rating)}</div>
+          <div class="score">Overall Rating ${rating} / 5.0</div>
+        </div>
+      </div>`;
+
+      html += `<div class="card"><h3>Season Overview</h3><div class="stats-grid">
+        <div class="stat-item"><div class="value">${events.length}</div><div class="label">Events</div></div>
+        <div class="stat-item"><div class="value">${overallAvg}</div><div class="label">Avg Score</div></div>
+        <div class="stat-item"><div class="value">${bestHighScore}</div><div class="label">High Score</div></div>
+        <div class="stat-item"><div class="value">${wsRank}</div><div class="label">Skills Rank / ${wsTotal}</div></div>
+        <div class="stat-item"><div class="value">${bestDriver ?? 'N/A'}</div><div class="label">Driver High</div></div>
+        <div class="stat-item"><div class="value">${bestProg ?? 'N/A'}</div><div class="label">Prog High</div></div>
+      </div></div>`;
+
+      // Event Results
+      html += `<div class="card"><h3>Event Results</h3>`;
+      if (rankings.length > 0) {
+        const eventMap = new Map();
+        rankings.forEach(r => { const eid = r.event?.id || 0; if (!eventMap.has(eid)) eventMap.set(eid, { event: r.event, rankings: [] }); eventMap.get(eid).rankings.push(r); });
+        const eventDetails = new Map();
+        events.forEach(e => eventDetails.set(e.id, e));
+        html += `<table><thead><tr><th>Event</th><th>Level</th><th>Rank</th><th>Avg Score</th><th>High Score</th><th>Str</th></tr></thead><tbody>`;
+        for (const [eid, data] of eventMap) {
+          const evt = eventDetails.get(eid) || data.event || {};
+          const level = evt.level || 'Other';
+          for (const r of data.rankings) {
+            const str = getEventStrength(level, 30);
+            const pct = (str / 5) * 100;
+            const col = str >= 4 ? '#a78bfa' : str >= 3 ? '#fbbf24' : '#60a5fa';
+            const rc = r.rank <= 3 ? 'rank-good' : r.rank <= 10 ? 'rank-ok' : 'rank-bad';
+            const avg = r.average_points != null ? r.average_points.toFixed(1) : '-';
+            const high = r.high_score ?? '-';
+            html += `<tr><td>${evt.name || data.event?.name || '?'}</td><td>${getLevelBadge(level)}</td><td class="${rc}"><strong>#${r.rank}</strong></td><td>${avg}</td><td><strong>${high}</strong></td><td>${str}<div class="strength-bar"><div class="strength-fill" style="width:${pct}%;background:${col}"></div></div></td></tr>`;
+          }
+        }
+        html += '</tbody></table>';
+      } else { html += '<p class="no-data">No event data this season</p>'; }
+      html += '</div>';
+
+      const eventDateMap = new Map();
+      events.forEach((e, idx) => eventDateMap.set(e.id, e.start || idx));
+
+      // Skills
+      html += `<div class="card"><h3>Skills Runs</h3>`;
+      if (skills.length > 0) {
+        html += `<table><thead><tr><th>Event</th><th>Type</th><th>Score</th><th>Rank</th><th>Attempts</th></tr></thead><tbody>`;
+        [...skills].sort((a, b) => {
+          const aEventId = a.event?.id || 0;
+          const bEventId = b.event?.id || 0;
+          const aDate = eventDateMap.has(aEventId) ? new Date(eventDateMap.get(aEventId)) : new Date(0);
+          const bDate = eventDateMap.has(bEventId) ? new Date(eventDateMap.get(bEventId)) : new Date(0);
+          const dateDiff = bDate - aDate;
+          if (dateDiff !== 0) return dateDiff;
+          return (a.type || '').localeCompare(b.type || '');
+        }).forEach(s => {
+          html += `<tr><td>${s.event?.name || '?'}</td><td>${s.type === 'driver' ? 'Driver' : 'Programming'}</td><td><strong>${s.score}</strong></td><td>#${s.rank ?? '-'}</td><td>${s.attempts ?? '-'}</td></tr>`;
+        });
+        html += '</tbody></table>';
+      } else { html += '<p class="no-data">No skills runs</p>'; }
+      html += '</div>';
+
+      // Awards
+      if (awards.length > 0) {
+        html += `<div class="card"><h3>Awards</h3><table><thead><tr><th>Event</th><th>Award</th></tr></thead><tbody>`;
+        [...awards].sort((a, b) => {
+          const aId = a.event?.id || 0;
+          const bId = b.event?.id || 0;
+          const aDate = eventDateMap.has(aId) ? new Date(eventDateMap.get(aId)) : new Date(0);
+          const bDate = eventDateMap.has(bId) ? new Date(eventDateMap.get(bId)) : new Date(0);
+          return bDate - aDate;
+        }).forEach(a => { html += `<tr><td>${a.event?.name || '?'}</td><td>${a.title || a.name || '?'}</td></tr>`; });
+        html += '</tbody></table></div>';
+      }
+
+      html += `<div class="card"><h3>Rating Breakdown</h3>
+        <table>
+          <thead><tr><th>Factor</th><th>Weight</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Ranking Percentile</td><td><strong>×3</strong></td><td>Based on team's rank vs. total teams at each event. Higher rank = higher score.</td></tr>
+            <tr><td>World Skills Rank</td><td><strong>×2</strong></td><td>Global skills ranking percentile. Better rank among all teams = higher score.</td></tr>
+            <tr><td>Event Strength</td><td><strong>×1</strong></td><td>Average competition level (World=5, Signature=4.5, National=3.5, State=3, Regional=2.5). Bonus for large events.</td></tr>
+            <tr><td>Awards</td><td><strong>×1</strong></td><td>Each award adds 0.5 points, up to max 5. More awards = higher score.</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:12px;color:var(--text-muted);font-size:12px;">Final rating = weighted average of all available factors, scaled to 5.0. Factors with no data are excluded.</p>
+      </div>`;
+
+      html += `<div style="text-align:center;margin-top:24px;">
+        <button onclick="closeDetail()" style="padding:12px 36px;border-radius:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:var(--transition);" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">← Back to Dashboard</button>
+      </div>`;
+
+      el.innerHTML = html;
+      document.getElementById('detailOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail() {
+      document.getElementById('detailOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ===== Init =====
+    renderDashboard();
+  </script>
+
+</body>
+
+</html>
