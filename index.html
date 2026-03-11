@@ -179,7 +179,7 @@
     }
 
     .match-name {
-      flex: 1;
+      width: 120px;
       padding: 8px 14px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
@@ -198,6 +198,7 @@
     }
 
     .btn-remove-match {
+      margin-left: auto;
       padding: 6px 10px;
       border-radius: 6px;
       border: none;
@@ -253,7 +254,7 @@
     }
 
     .partner-input {
-      width: 130px;
+      width: 90px;
       flex-shrink: 0;
       padding: 7px 12px;
       border-radius: 6px;
@@ -265,6 +266,7 @@
       font-weight: 500;
       outline: none;
       transition: var(--transition);
+      text-transform: uppercase;
     }
 
     .partner-input:focus {
@@ -304,6 +306,7 @@
       gap: 6px;
       flex: 1;
       min-width: 0;
+      flex-wrap: wrap;
     }
 
     .rating-stars {
@@ -333,6 +336,40 @@
       color: var(--text-muted);
       font-size: 12px;
       font-style: italic;
+    }
+
+    .team-details-mini {
+      display: flex;
+      gap: 6px;
+      margin-left: auto;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3px 8px;
+      font-size: 11px;
+      color: var(--text-primary);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-lbl {
+      color: var(--text-secondary);
+      margin-right: 6px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-val {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 11px;
     }
 
     .btn-remove-partner {
@@ -652,21 +689,34 @@
 
       .partner-row {
         flex-wrap: wrap;
-        gap: 6px;
-        padding: 10px;
+        gap: 8px;
+        padding: 12px;
       }
 
       .partner-role {
         width: 100%;
+        margin-bottom: -4px;
       }
 
       .partner-input {
-        width: 100%;
+        width: auto;
+        flex: 1;
+      }
+
+      .btn-lookup {
+        flex-shrink: 0;
       }
 
       .rating-badge {
         min-width: auto;
         width: 100%;
+        margin-top: 4px;
+      }
+
+      .team-details-mini {
+        margin-left: 0;
+        width: 100%;
+        margin-top: 4px;
       }
 
       .team-header {
@@ -721,6 +771,8 @@
     const VIQRC_PROGRAM_ID = 41;
     const EMBEDDED_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTJkNDgyNWY4YjM1ZmM0ZDFkZTk4OWVmZGVhYWY1ZmQ1ZWNiZDViMGYwNzI1MmI0NzVlODdlODg4ZDBlODk3MmI3NjgwNWYxMmJhMWI4MTAiLCJpYXQiOjE3NzMxNTE1ODUuODMyNjAwMSwibmJmIjoxNzczMTUxNTg1LjgzMjYwMiwiZXhwIjoyNzE5OTI2Mzg1LjgyMzM1MDksInN1YiI6Ijk5NTEzIiwic2NvcGVzIjpbXX0.J25lIQa-X9zCVuMVWxDvvEHHOn030BKb7bPytEzNIxtD4HYKLMUbN0H6DGzwxtCE-7DPB5Ve1EhXmVLFNSUDkNpEPF5i9wI0aynwD_iJ9npjh_hHIdZRcZU7FWQa5MmUi2EXpx4UV_bkX5KtVFF4cd75M1koRgE78uFB1_zg8Q4QeorQ0lbOmSY8nwOwhO85xhDCuXx9offbysmXUc4FeNismH2U9RfZQqQZ5LbqtGktWDWLJOlCvCURnA0YQQbv5rUSiabV42bQRv7QnS94O0WpmLZ-xnXgma-UsfXvrrnjYNx8Ypzo4ikIacKdOa-4ctdFQW2Jbof8HdLutlB4PxvcUH1lIl8enf4YatMnDDvSD-K6gR49JIzziqfLmPRobnanyxEKyYlV_BxxZRUQCPiQE3uhGBN7gJuXn9I82loGzufs2j6DYfNpup-dbYeXEJKRJdtOTWya3hyvCKT-IMTWf6_DzwmHYf_6ZMmUQpJhytM-cfDhnyOfqGmleYR7u2ih0YG4LY0ht-CScEqwdyg43EvuBSHiMKdjWPCsXEwpfPQ1xFVilXbWt_gCuLHtALy6S53nS0Zt6by35Tpr6JPORywOazfsa08kL4nVYvM39YunjqVLh1vVFHuaaQoL6d7tcEMmBAHWMspRzNL9daRzY5MLY-iYj718LwxT-00';
     let currentSeasonId = null;
+    let worldSkillsCache = null;
+    let worldSkillsCacheTime = 0;
 
     // ===== Data Model =====
     const DEFAULT_MATCHES = 8;
@@ -775,9 +827,15 @@
               <button class="btn-lookup" onclick="lookupPartner(${mi},${pi})" id="btn-${mi}-${pi}">Lookup</button>
               <div class="rating-badge">
                 ${hasRating ? `
-                  <span class="rating-stars">${renderStarsSmall(p.rating)}</span>
-                  <span class="rating-num">${p.rating}/5</span>
-                  <span class="rating-name" title="${escHtml(p.teamName)}">${escHtml(p.teamName)}</span>
+                  <span class="rating-stars" style="color:var(--gold);">${renderStarsSmall(p.rating)}</span>
+                  <span class="rating-num" style="min-width: 28px; display:inline-block; margin-right:4px;">${p.rating}/5</span>
+                  <span class="rating-name" style="max-width: 140px; margin-right:4px;" title="${escHtml(p.teamName)}">${escHtml(p.teamName)}</span>
+                  ${p.summary ? `
+                  <div class="team-details-mini">
+                    <div class="stat-pill" title="World Skills Rank"><span class="stat-lbl">World</span><span class="stat-val">#${p.summary.wsRank}</span></div>
+                    <div class="stat-pill" title="Latest Event Average"><span class="stat-lbl">Last Avg</span><span class="stat-val">${p.summary.latestAvg}</span></div>
+                    <div class="stat-pill" title="Latest Event Max"><span class="stat-lbl">Last Max</span><span class="stat-val">${p.summary.latestHigh}</span></div>
+                  </div>` : ''}
                 ` : `<span class="no-rating">${p.number ? 'Not yet scouted' : ''}</span>`}
               </div>
               <button class="btn-remove-partner" onclick="removePartner(${mi},${pi})" title="Remove">&minus;</button>
@@ -875,12 +933,19 @@
 
     async function fetchWorldSkills(seasonId, teamNum) {
       try {
-        const res = await fetch(`https://www.robotevents.com/api/seasons/${seasonId}/skills?grade_level=All`);
-        if (!res.ok) return null;
-        const data = await res.json();
-        const entry = data.find(e => e.team && e.team.team === teamNum);
-        return { entry, total: data.length };
-      } catch { return null; }
+        const now = Date.now();
+        if (!worldSkillsCache || now - worldSkillsCacheTime > 1000 * 60 * 60) {
+          const res = await fetch(`https://www.robotevents.com/api/seasons/${seasonId}/skills?grade_level=All`);
+          if (!res.ok) return null;
+          worldSkillsCache = await res.json();
+          worldSkillsCacheTime = now;
+        }
+        const entry = worldSkillsCache.find(e => e.team && e.team.team === teamNum);
+        return { entry, total: worldSkillsCache.length };
+      } catch (err) {
+        console.error("fetchWorldSkills error:", err);
+        return null;
+      }
     }
 
     // ===== Lookup Partner =====
@@ -919,8 +984,27 @@
 
         const rating = calcTeamRating(rankings, skills, events, worldSkillsRaw, awards);
 
+        let latestAvg = 'N/A';
+        let latestHigh = 'N/A';
+        if (rankings.length > 0) {
+          const rankingsWithDates = rankings.map(r => {
+            const evt = r.event || {};
+            const mainEvt = events.find(e => e.id === evt.id) || evt;
+            return { r, date: mainEvt.start ? new Date(mainEvt.start) : new Date(0) };
+          });
+          rankingsWithDates.sort((a, b) => b.date - a.date);
+          const lastEventRanking = rankingsWithDates[0].r;
+          latestAvg = lastEventRanking.average_points != null ? lastEventRanking.average_points.toFixed(1) : 'N/A';
+          latestHigh = lastEventRanking.high_score ?? 'N/A';
+        }
+
         partner.rating = rating;
         partner.teamName = team.team_name || teamNum;
+        partner.summary = {
+          latestAvg,
+          latestHigh,
+          wsRank: worldSkillsRaw?.entry?.rank || 'N/A'
+        };
         saveData(dashData);
         renderDashboard();
 
